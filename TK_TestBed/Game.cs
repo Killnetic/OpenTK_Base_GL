@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics;
@@ -17,11 +18,40 @@ namespace TK_TestBed
         private Core core;
         public Game(int width, int height, GraphicsMode m, string title) : base(width, height, m, title)
         {
+            // OpenTK configuration
+            //
             VSync = VSyncMode.Adaptive;
-            core = new Core();
+
+            // Our initialization
+            //
+            core = new Core(Color.FromArgb(255, 2, 0, 8));
+            core.LoadScene(new TestScene("test scene", new Vector2(ClientSize.Width, ClientSize.Height)));
+            core.ActiveScene = "test scene";
+
+            // Subscribe to OpenTK events
+            //
+            RenderFrame += OnRenderFrame;
+            UpdateFrame += OnUpdateFrame;
+            Resize += OnResize;
+            Load += OnLoad;
+            Closing += OnClosing;
+
+            // Bind key event handlers
+            //
+            keyBinder = new Keybinder(Keyboard);
+
+            keyBinder.SubscribeListener(Key.V, VsyncToggle);
+            keyBinder.SubscribeListener(Key.Q, Quit);
+            keyBinder.SubscribeListener(Key.F4, Quit);
+            keyBinder.SubscribeListener(Key.Enter, ToggleWindowedFullscreen);
         }
-        #region OpenTK event overrides
-        protected override void OnRenderFrame(FrameEventArgs e)
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// 
+        #region OpenTK events
+
+        private void OnRenderFrame(object sender, FrameEventArgs frameEventArgs)
         {
             // opengl rendering specific updates ONLY please
             //
@@ -29,14 +59,10 @@ namespace TK_TestBed
 
             core.RenderFrame();
 
-            
             SwapBuffers();
-
-
-            base.OnRenderFrame(e);
         }
 
-        protected override void OnUpdateFrame(FrameEventArgs e)
+        private void OnUpdateFrame(object sender, FrameEventArgs frameEventArgs)
         {
             // game simulation updates
             //
@@ -48,44 +74,36 @@ namespace TK_TestBed
             Console.WriteLine("[V]sync: {0}", VSync);
             Console.WriteLine("[Q]uit");
             Console.WriteLine("[Alt+Enter] Toggle Windowed Fullscreen");
-
-            base.OnUpdateFrame(e);
         }
 
-        protected override void OnResize(EventArgs e)
+
+        private void OnResize(object sender, EventArgs eventArgs)
         {
             // rebuild viewport, projection matrix
             //
             core.UpdateScreenSize(ClientRectangle.Width, ClientRectangle.Height);
-
-            base.OnResize(e);
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void OnLoad(object sender, EventArgs eventArgs)
         {
             // initialize minimal necessary GPU resources
             //
             WindowBorder = WindowBorder.Fixed;
-
-            keyBinder = new Keybinder(Keyboard);
-
-            keyBinder.SubscribeListener(Key.V, VsyncToggle);
-            keyBinder.SubscribeListener(Key.Q, Quit);
-            keyBinder.SubscribeListener(Key.F4, Quit);
-            keyBinder.SubscribeListener(Key.Enter, ToggleWindowedFullscreen);
-
-            base.OnLoad(e);
         }
-        
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+
+        private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
             // free all GPU resources
             //
             core.FreeAll();
-
-            base.OnClosing(e);
         }
+        
         #endregion
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// 
+        #region key binding event handlers
 
         private bool windowedFullscreen = false;
         private Size oldSize;
@@ -119,5 +137,7 @@ namespace TK_TestBed
         {
             Exit();
         }
+
+        #endregion
     }
 }

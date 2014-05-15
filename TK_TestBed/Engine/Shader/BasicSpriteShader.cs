@@ -24,10 +24,9 @@ namespace TK_TestBed.Engine.Shader
                     "vec4 eyePos = MV * position;",
                     "vec4 projVoxel = P * vec4(voxelSize, voxelSize, eyePos.z, eyePos.w);",
                     "vec2 projSize = screenSize * projVoxel.xy / projVoxel.w;",
-                    "depthAlpha = clamp(1.0f - distance(eyePos,projVoxel)/maxDistance,0.0f,1.0f) * pctAlpha;",
-                    "float posSize = projSize.x+projSize.y+depthAlpha*5.0f;",
-                    "depthAlpha = max(0.05f,depthAlpha * posSize/9.0f);",
-                    "gl_PointSize = max(4.0f,posSize);",
+                    "float posSize = projSize.x+projSize.y;",
+                    "depthAlpha = clamp(1.0f - distance(eyePos,projVoxel)/maxDistance,0.1f,1.0f) * pctAlpha;",
+                    "gl_PointSize = max(posSize, 2.0f);",
                     "gl_Position = P * eyePos;",
                 "}");
 
