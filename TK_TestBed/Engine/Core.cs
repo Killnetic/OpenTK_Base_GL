@@ -87,18 +87,14 @@ namespace TK_TestBed.Engine
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-           
-            GL.Enable(EnableCap.CullFace);
+            //GL.Enable(EnableCap.CullFace);
             
             // TODO: Draw objects
             //
 
             scenes[ActiveScene].DrawObjects();
 
-            GL.Disable(EnableCap.CullFace);
-            GL.End();
+            //GL.Disable(EnableCap.CullFace);
         }
 
         public void UpdateScreenSize(int width, int height)

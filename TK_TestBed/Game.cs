@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using TK_TestBed.Engine;
 using TK_TestBed.Engine.Scene;
@@ -15,7 +16,7 @@ namespace TK_TestBed
     public class Game : GameWindow
     {
         private Keybinder keyBinder;
-        private Core core;
+        private Core core; // it is probably better to merge core and game(this) classes
         public Game(int width, int height, GraphicsMode m, string title) : base(width, height, m, title)
         {
             // OpenTK configuration
@@ -28,14 +29,6 @@ namespace TK_TestBed
             core.LoadScene(new TestScene("test scene", new Vector2(ClientSize.Width, ClientSize.Height)));
             core.ActiveScene = "test scene";
 
-            // Subscribe to OpenTK events
-            //
-            RenderFrame += OnRenderFrame;
-            UpdateFrame += OnUpdateFrame;
-            Resize += OnResize;
-            Load += OnLoad;
-            Closing += OnClosing;
-
             // Bind key event handlers
             //
             keyBinder = new Keybinder(Keyboard);
@@ -44,6 +37,15 @@ namespace TK_TestBed
             keyBinder.SubscribeListener(Key.Q, Quit);
             keyBinder.SubscribeListener(Key.F4, Quit);
             keyBinder.SubscribeListener(Key.Enter, ToggleWindowedFullscreen);
+
+            // Subscribe to OpenTK events
+            //
+            RenderFrame += OnRenderFrame; // Draw-specific code here
+            UpdateFrame += OnUpdateFrame; // Game model updates here
+            Resize += OnResize;
+            Load += OnLoad;
+            Closing += OnClosing;
+
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +84,7 @@ namespace TK_TestBed
             // rebuild viewport, projection matrix
             //
             core.UpdateScreenSize(ClientRectangle.Width, ClientRectangle.Height);
+
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Engine\3DObjects\AnimatedSprite.cs" />
     <Compile Include="Engine\3DObjects\ParticleCloud.cs" />
+    <Compile Include="Engine\3DObjects\TextOverlay.cs" />
     <Compile Include="Engine\Camera\Camera.cs" />
     <Compile Include="Engine\Core.cs" />
     <Compile Include="Engine\GPU\PointSpriteImage.cs" />

@@ -89,5 +89,10 @@ namespace TK_TestBed.Engine._3DObjects
             staticVbo.Free();
             pointSpriteImage.Free();
         }
+
+        public override void Resize(int height, int width)
+        {
+            
+        }
     }
 }

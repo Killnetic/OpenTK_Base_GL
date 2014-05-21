@@ -28,6 +28,11 @@ namespace TK_TestBed.Engine._3DObjects
             FreeTexture();
         }
 
+        public override void Resize(int height, int width)
+        {
+
+        }
+
         public AnimatedSprite()
         {
             position = Vector3.Zero;

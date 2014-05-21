@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using TK_TestBed.Engine;
@@ -13,10 +14,17 @@ namespace TK_TestBed.Engine.Scene
         private List<BaseObject3D> objects3d;
         private BasicSpriteShader spriteShader;
         private ParticleCloud particleCloud;
+        private TextOverlay textOverlay;
         private float sceneDepth;
 
         public TestScene(string sceneName, Vector2 screenSize) : base(sceneName, screenSize)
         {
+            // make some text
+            //
+            textOverlay = new TextOverlay((int)screenSize.X,(int)screenSize.Y);
+            TextOverlay.TextEntry entry = new TextOverlay.TextEntry("hello", Brushes.WhiteSmoke, new Font(FontFamily.GenericSansSerif, 12.0f),new PointF(10,10));
+            textOverlay.SubmitEntry("hello", entry);
+
             spriteShader = new BasicSpriteShader();
             objects3d = new List<BaseObject3D>();
             particleCloud = new ParticleCloud(1000000, 6);
@@ -60,6 +68,10 @@ namespace TK_TestBed.Engine.Scene
         private float delta, cameraRotation;
         public override void DrawObjects()
         {
+            textOverlay.Draw();
+            
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
             delta = (float)(DateTime.Now - actualTimeDelta).TotalSeconds;
             actualTimeDelta = DateTime.Now;
             cameraRotation = ((cameraRotation < 360f) ? (cameraRotation + delta * 0.1f) : 0f);
@@ -88,10 +100,9 @@ namespace TK_TestBed.Engine.Scene
 
             GL.Disable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            /*for (int i = 0; i < objects3d.Count; i++)
-            {
-                objects3d[i].Draw();
-            }*/
+            GL.UseProgram(0); // disable program
+
+            
         }
     }
 }

@@ -14,6 +14,11 @@ namespace TK_TestBed.Engine
         ///  </summary>
         public abstract void Free();
 
+        /// <summary>
+        /// Update any necessary screen size dependent resources
+        /// </summary>
+        public abstract void Resize(int height, int width);
+
         public Vector3 position;
     }
 }
